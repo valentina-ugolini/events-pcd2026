@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0009b8" />
+<meta name="description" content="PROCESSING COMMUNITY DAY @RNDR — Saturday 17 October 2026, 14:30–19:00, Paviljoensgracht 20, 2512BP The Hague. RSVP here." />
+<title>PROCESSING COMMUNITY DAY @RNDR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#0959FF;
+    --blue-dim:#a9c0ff;
+    --ink:#111111;
+    --paper:#ffffff;
+    --stage:#0a0a0a;
+    --mono: "IBM Plex Mono", "Courier New", monospace;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--stage);
+    font-family:var(--mono);
+    font-weight:500;
+    color:var(--ink);
+  }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:stretch;
+    padding:0;
+    position:relative;
+  }
+
+  #bg-layer{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    background:var(--stage);
+    overflow:hidden;
+    pointer-events:none;
+  }
+  #bg-layer video,
+  #bg-layer canvas{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+
+  .card{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:none;
+    min-height:100vh;
+    background:var(--paper);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+
+  .hero{
+    position:relative;
+    z-index:1;
+    padding:22px 18px 18px;
+    display:flex;
+    flex-direction:column;
+    flex:1;
+  }
+
+  .hero-info{
+    display:contents;
+  }
+
+  h1.title{
+    font-size:20px;
+    font-weight:450;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    margin:0 0 22px;
+    line-height:1.35;
+  }
+
+  .meta{
+    font-size:14px;
+    font-weight:420;
+    letter-spacing:0.02em;
+    line-height:1.4;
+    margin:0 0 20px;
+  }
+
+  .meta .label{
+    text-transform:uppercase;
+  }
+
+  .meta a, .info-body a, .rsvp-body a{
+    color:var(--blue);
+    text-decoration:underline;
+  }
+
+  .meta .action{
+    font-style:italic;
+    font-size:14px;
+  }
+
+  .meta strong{ font-weight:600; }
+
+  .rule{
+    border:none;
+    border-top:1px solid transparent;
+    margin:0;
+  }
+
+  .grain-wrap{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+    overflow:visible;
+  }
+
+  .grain-wrap svg{
+    width:118%;
+    height:118%;
+    max-height:none;
+    overflow:visible;
+  }
+
+  .actions{
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:10px;
+    margin-top:auto;
+    padding-top:20px;
+  }
+
+  .btn{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:20px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:6px 80px;
+    background:var(--paper);
+    color:var(--ink);
+    border:2.0px solid var(--ink);
+    border-radius:10px;
+    cursor:pointer;
+    text-align:center;
+  }
+
+  .btn:hover{
+    background:#f2f2f2;
+  }
+
+  .btn.active{
+    background:var(--blue);
+    color:var(--paper);
+    border-color:var(--blue);
+  }
+
+  .panel{
+    position:absolute;
+    inset:0;
+    z-index:5;
+    display:none;
+    flex-direction:column;
+    padding:112px 22px 40px;
+    background:rgba(255,255,255,0.68);
+    -webkit-backdrop-filter:blur(3px);
+    backdrop-filter:blur(3px);
+  }
+
+  .panel.open{ display:flex; }
+
+  .panel-head{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:18px;
+    flex:none;
+  }
+
+  .panel-title{
+    color:var(--blue);
+    font-size:20px;
+    font-weight:500;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    text-align:center;
+    margin:0;
+  }
+
+  .panel-close{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:var(--blue);
+    font-size:30px;
+    font-weight:50;
+    line-height:1;
+    cursor:pointer;
+    padding:4px;
+  }
+
+  .panel-box{
+    border:2.0px solid var(--blue);
+    border-radius:10px;
+    padding:22px 20px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    color:var(--blue);
+    background:var(--paper);
+    overflow-y:auto;
+    box-shadow:0 12px 32px rgba(0,0,0,0.12);
+  }
+
+  .panel-box p{
+    font-size:16px;
+    font-weight:400;
+    line-height:1.55;
+    margin:0 0 14px;
+  }
+
+
+
+  /* PROGRAM */
+  .program-list{
+    font-size:16px;
+    font-weight:500;
+    line-height:2.1;
+  }
+  .program-list .item{ color:var(--blue); font-weight:400; }
+  .program-list .item strong{ font-weight:500; }
+  .program-list .break{
+    color:var(--blue);
+    opacity:0.55;
+    font-style:italic;
+    font-weight:400;
+  }
+  .program-list .speakers{
+    margin-top:auto;
+    padding-top:20px;
+    color:var(--blue);
+    font-style:italic;
+    font-weight:500;
+  }
+
+  /* RSVP FORM */
+  .field{ margin-bottom:16px; }
+  .field label{
+    display:block;
+    font-size:14px;
+    font-weight:420;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    color:var(--blue);
+  }
+  .field input[type=text],
+  .field input[type=email]{
+    width:100%;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:14px;
+    padding:9px 10px;
+    border:1.5px solid var(--blue);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .field input:focus, .field textarea:focus{
+    outline:2px solid var(--blue);
+    outline-offset:1px;
+  }
+
+  .check-row{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    font-size:13px;
+    font-weight:500;
+    line-height:1.5;
+    margin-bottom:18px;
+    cursor:pointer;
+  }
+  .check-row input{
+    appearance:none;
+    -webkit-appearance:none;
+    margin-top:1px;
+    width:18px;
+    height:18px;
+    border:1.5px solid var(--blue);
+    border-radius:4px;
+    background:var(--paper);
+    flex:none;
+    cursor:pointer;
+  }
+  .check-row input:checked{
+    background:var(--blue);
+  }
+  .check-row .txt{ color:var(--blue); }
+
+  .lightning-extra{
+    display:none;
+    margin:-6px 0 16px 26px;
+  }
+  .lightning-extra.show{ display:block; }
+  .lightning-extra .hint{
+    font-size:12px;
+    font-weight:500;
+    color:var(--blue);
+    line-height:1.5;
+    margin-bottom:8px;
+  }
+  .lightning-extra textarea{
+    width:100%;
+    min-height:90px;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:14px;
+    padding:9px 10px;
+    border:1.5px solid var(--blue);
+    border-radius:8px;
+    resize:vertical;
+    color:var(--ink);
+  }
+
+  .rsvp-footer{
+    margin-top:auto;
+    padding-top:8px;
+  }
+
+  .send-btn{
+    font-family:var(--mono);
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    padding:10px 24px;
+    border:1.5px solid var(--blue-dim);
+    border-radius:10px;
+    background:var(--paper);
+    color:var(--blue-dim);
+    cursor:not-allowed;
+  }
+  .send-btn.ready{
+    border-color:var(--blue);
+    color:var(--paper);
+    background:var(--blue);
+    cursor:pointer;
+  }
+
+  .rsvp-success{
+    display:none;
+    color:var(--blue);
+    font-size:13px;
+    line-height:1.6;
+    margin-top:auto;
+  }
+  .rsvp-success.show{ display:block; }
+
+  .visually-hidden{
+    position:absolute;
+    width:1px;height:1px;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+  }
+
+  @media (max-width: 380px){
+    .card{ padding:0; }
+  }
+
+  /* ---------- DESKTOP LAYOUT ---------- */
+  @media (min-width: 900px){
+    .hero{
+      padding:56px 64px 48px;
+    }
+
+    .hero-info{
+      max-width:460px;
+    }
+
+    .title{ font-size:21px; }
+
+    .actions{
+      flex-direction:row;
+      justify-content:center;
+      align-items:center;
+      gap:16px;
+    }
+
+    .btn{
+      flex:none;
+      min-width:150px;
+    }
+
+    .panel{
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+    }
+
+    .panel-box{
+      width:100%;
+      max-width:440px;
+      max-height:min(640px, calc(100% - 40px));
+      flex:none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="bg-layer">
+  <!-- future background animation goes here
+  <video autoplay muted loop playsinline>
+    <source src="/animation.mp4" type="video/mp4">
+  </video>
+  -->
+</div>
+
+<div class="card">
+
+  <div class="grain-wrap" aria-hidden="true">
+    <svg viewBox="0 0 400 220" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="noise"/>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="7"/>
+          <feComponentTransfer>
+            <feFuncA type="discrete" tableValues="0 0 1 0 1 1 0 1"/>
+          </feComponentTransfer>
+        </filter>
+      </defs>
+      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" filter="url(#grain)"
+            font-family="Arial, sans-serif" font-weight="800"
+            font-size="200" fill="#0959FF">25</text>
+    </svg>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero-info">
+      <h1 class="title">Processing Community Day @RNDR</h1>
+
+      <p class="meta">
+        <span class="label">Saturday 17 October 2026</span><br/>
+        14:30&ndash;19:00<br/>
+        <a href="#" id="ics-link" class="action">[+ ADD TO CALENDAR]</a>
+      </p>
+
+      <p class="meta">
+        RNDR<br/>
+        PAVILJOENSGRACHT 20<br/>
+        2512BP THE HAGUE<br/>
+        <a href="https://www.openstreetmap.org/directions?to=52.0745%2C4.3121#map=17/52.0745/4.3121" target="_blank" rel="noopener" class="action">[&rarr; NAVIGATE]</a>
+      </p>
+
+      <p class="meta">
+        FREE ADMISSION<br/>
+        <span class="action">[RSVP REQUIRED]</span>
+      </p>
+    </div>
+
+    <div class="actions">
+      <button class="btn" data-open="info">Info</button>
+      <button class="btn" data-open="rsvp">RSVP</button>
+      <button class="btn" data-open="program">Program</button>
+    </div>
+  </section>
+
+
+  <!-- ============ INFO PANEL ============ -->
+  <section class="panel" id="panel-info" role="dialog" aria-modal="true" aria-labelledby="info-title">
+    <div class="panel-box info-body">
+      <div class="panel-head">
+        <h2 class="panel-title" id="info-title">Info</h2>
+        <button class="panel-close" data-close="info" aria-label="Close">&times;</button>
+      </div>
+      <p>Processing Community Day (PCD) is a worldwide series of community-led events celebrating art, code, and open-source creative tools. Events are organized by local communities around the globe.<br/>
+        &rarr; <a href="https://day.processing.org/" target="_blank" rel="noopener">Processing Community Day</a>
+      </p>
+      <p>Processing was created in 2001 as a creative tool for artists and designers. Today, we celebrate 25 years of contributions and look forward to everything still to come.
+        <br/> &rarr; <a href="https://processingfoundation.org/about/history/" target="_blank" rel="noopener">A History of Processing</a>
+      </p><br/>
+
+      <div class="program-list">
+        <div class="speakers">DO I NEED A TICKET?</div>
+        <p>PCD@RNDR is free for everyone.<br/>Please <a href="#" data-open="rsvp">RSVP</a>.</p>
+        <div class="speakers">QUESTIONS?</div>
+        <p>Send an email to <a href="mailto:events@rndr.studio">events@rndr.studio</a></p>
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- ============ PROGRAM PANEL ============ -->
+  <section class="panel" id="panel-program" role="dialog" aria-modal="true" aria-labelledby="program-title">
+    <div class="panel-box">
+      <div class="panel-head">
+        <h2 class="panel-title" id="program-title">Program</h2>
+        <button class="panel-close" data-close="program" aria-label="Close">&times;</button>
+      </div>
+      <div class="program-list">
+        <div class="item"><strong>14.30</strong> Doors open</div>
+        <div class="item"><strong>15.00</strong> First talk (30 min + Q&amp;A)</div>
+        <div class="break">-- break</div>
+        <div class="item"><strong>16.00</strong> Second talk (30 min + Q&amp;A)</div>
+        <div class="break">-- break</div>
+        <div class="item"><strong>17.00</strong> Third talk (30 min + Q&amp;A)</div>
+        <div class="break">-- break</div>
+        <div class="item"><strong>18.00</strong> Lightning talks</div>
+        <div class="break">-- drinks</div>
+
+        <br/><br/>
+      <div class="speakers">SPEAKERS (A-Z)</div>
+      <p>Jaap Meijers (KABK Hacklab)<br/>Jeroen Barendse (RNDR)<br/>Sander Sturing (Studio Dumbar)<br/></p>
+      </div>
+      
+    </div>
+  </section>
+
+  <!-- ============ RSVP PANEL ============ -->
+  <section class="panel" id="panel-rsvp" role="dialog" aria-modal="true" aria-labelledby="rsvp-title">
+    <div class="panel-box">
+      <div class="panel-head">
+        <h2 class="panel-title" id="rsvp-title">RSVP</h2>
+        <button class="panel-close" data-close="rsvp" aria-label="Close">&times;</button>
+      </div>
+      <form id="rsvp-form" novalidate>
+        <div class="field">
+          <label for="rsvp-name">Name</label>
+          <input type="text" id="rsvp-name" name="name" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label for="rsvp-email">Email</label>
+          <input type="email" id="rsvp-email" name="email" required autocomplete="email" />
+        </div>
+
+        <label class="check-row" for="rsvp-lightning">
+          <input type="checkbox" id="rsvp-lightning" name="lightning" />
+          <span class="txt">I would like to give a lightning talk and share my work or a sketch</span>
+        </label>
+
+        <div class="lightning-extra" id="lightning-extra">
+          <p class="hint">Tell us about what you have in mind. We&rsquo;ll review the submissions and get in touch with you about the lightning talk.</p>
+          <textarea id="rsvp-pitch" name="pitch" placeholder="What would you like to share?"></textarea>
+        </div>
+
+        <label class="check-row" for="rsvp-consent">
+          <input type="checkbox" id="rsvp-consent" name="consent" required />
+          <span class="txt">Understood: photos and videos will be taken at the event and may be shared on the RNDR website and social media channels (removed on request), practical details will arrive by email, and all RSVP data is deleted 7 days after the event.</span>
+        </label>
+
+        <div class="rsvp-footer">
+          <button type="submit" class="send-btn" id="rsvp-submit" disabled>Send</button>
+        </div>
+      </form>
+
+      <div class="rsvp-success" id="rsvp-success">
+        Thanks &mdash; you&rsquo;re on the list. Check your inbox for details closer to the day.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var buttons = document.querySelectorAll('[data-open]');
+  var closers = document.querySelectorAll('[data-close]');
+  var panels = {
+    info: document.getElementById('panel-info'),
+    rsvp: document.getElementById('panel-rsvp'),
+    program: document.getElementById('panel-program')
+  };
+  var navBtns = {
+    info: document.querySelector('.btn[data-open="info"]'),
+    rsvp: document.querySelector('.btn[data-open="rsvp"]'),
+    program: document.querySelector('.btn[data-open="program"]')
+  };
+
+  function openPanel(name){
+    Object.keys(panels).forEach(function(k){
+      panels[k].classList.toggle('open', k === name);
+    });
+    Object.keys(navBtns).forEach(function(k){
+      if(navBtns[k]) navBtns[k].classList.toggle('active', k === name);
+    });
+  }
+
+  function closePanel(name){
+    panels[name].classList.remove('open');
+    if(navBtns[name]) navBtns[name].classList.remove('active');
+  }
+
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      openPanel(btn.getAttribute('data-open'));
+    });
+  });
+
+  closers.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      closePanel(btn.getAttribute('data-close'));
+    });
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      Object.keys(panels).forEach(closePanel);
+    }
+  });
+
+  /* ---- lightning talk toggle ---- */
+  var lightningCheck = document.getElementById('rsvp-lightning');
+  var lightningExtra = document.getElementById('lightning-extra');
+  lightningCheck.addEventListener('change', function(){
+    lightningExtra.classList.toggle('show', lightningCheck.checked);
+  });
+
+  /* ---- form validity -> enable Send ---- */
+  var form = document.getElementById('rsvp-form');
+  var submitBtn = document.getElementById('rsvp-submit');
+  var nameInput = document.getElementById('rsvp-name');
+  var emailInput = document.getElementById('rsvp-email');
+  var consentInput = document.getElementById('rsvp-consent');
+
+  function checkReady(){
+    var ready = nameInput.value.trim().length > 0 &&
+                emailInput.checkValidity() &&
+                consentInput.checked;
+    submitBtn.disabled = !ready;
+    submitBtn.classList.toggle('ready', ready);
+  }
+  [nameInput, emailInput, consentInput].forEach(function(el){
+    el.addEventListener('input', checkReady);
+    el.addEventListener('change', checkReady);
+  });
+
+  /* ---- submit handler ----
+     Replace the URL below with your own endpoint (Formspree, Google Sheet
+     webhook, your own API route, etc). See the notes shared alongside this
+     file for options. */
+  var ENDPOINT_URL = ""; // e.g. "https://formspree.io/f/xxxxxxx"
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if(submitBtn.disabled) return;
+
+    var payload = {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      lightningTalk: lightningCheck.checked,
+      pitch: lightningCheck.checked ? document.getElementById('rsvp-pitch').value.trim() : "",
+      consent: consentInput.checked,
+      event: "Processing Community Day @RNDR - 17 Oct 2026"
+    };
+
+    if(!ENDPOINT_URL){
+      console.warn("RSVP captured locally (no ENDPOINT_URL set yet):", payload);
+      showSuccess();
+      return;
+    }
+
+    submitBtn.textContent = "Sending…";
+    fetch(ENDPOINT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if(res.ok){
+        showSuccess();
+      } else {
+        submitBtn.textContent = "Send";
+        alert("Something went wrong sending your RSVP. Please try again or email events@rndr.studio.");
+      }
+    }).catch(function(){
+      submitBtn.textContent = "Send";
+      alert("Something went wrong sending your RSVP. Please try again or email events@rndr.studio.");
+    });
+  });
+
+  function showSuccess(){
+    form.style.display = "none";
+    document.getElementById('rsvp-success').classList.add('show');
+  }
+
+  /* ---- add to calendar (.ics) ---- */
+  document.getElementById('ics-link').addEventListener('click', function(e){
+    e.preventDefault();
+    var ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//RNDR//Processing Community Day//EN",
+      "BEGIN:VEVENT",
+      "UID:" + Date.now() + "@rndr.studio",
+      "DTSTAMP:20261001T000000Z",
+      "DTSTART:20261017T123000Z",
+      "DTEND:20261017T170000Z",
+      "SUMMARY:Processing Community Day @RNDR",
+      "LOCATION:Paviljoensgracht 20\\, 2512BP The Hague",
+      "DESCRIPTION:Processing Community Day (PCD) at RNDR. Free admission\\, RSVP required.",
+      "END:VEVENT",
+      "END:VCALENDAR"
+    ].join("\r\n");
+    var blob = new Blob([ics], { type: "text/calendar" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = "processing-community-day-rndr.ics";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+})();
+</script>
+
+</body>
+</html>
